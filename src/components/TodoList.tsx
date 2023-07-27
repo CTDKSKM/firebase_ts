@@ -1,40 +1,45 @@
-import { styled } from "styled-components";
 
-type Props = {};
+import { styled } from "styled-components";
+type Props = {
+  todos:Todo[];
+  toggleTodo: (id:string) => void;
+  deleteTodo: (id:string) => void;
+};
 type Todo = {
+  id: string;
   title: string;
   content: string;
+  isDone: boolean;
 };
-const TodoList = (props: Props) => {
-  const testArr: Todo[] = [
-    { title: "테스트1", content: "테스트1입니다" },
-    { title: "테스트2", content: "테스트2입니다" },
-    { title: "테스트3", content: "테스트3입니다" },
-    { title: "테스트4", content: "테스트4입니다" },
-    { title: "테스트5", content: "테스트5입니다" },
-  ];
+const TodoList = ({todos, toggleTodo, deleteTodo}: Props) => {
 
-  return (
-    <StyledDiv>
-      {testArr.map((todo, idx) => {
+  return (<><StyledP>Todo..</StyledP><StyledTodoListDiv>
+      {todos.map((todo, idx) => {
         return (
           <StyledTodoCard key={idx}>
-            {todo.title}
-            {todo.content}
+            <div>{todo.title}</div>
+            <div>{todo.content}</div>
+            <button onClick={()=>{toggleTodo(todo.id)}}>{todo.isDone ? '취소' : '완료'}</button>
+            <button onClick={()=>{deleteTodo(todo.id)}}>삭제</button>
           </StyledTodoCard>
         );
       })}
-    </StyledDiv>
+    </StyledTodoListDiv></>
+    
   );
 };
 
 export default TodoList;
-
-const StyledDiv = styled.div`
-  width: 80%;
-  padding: 50px;
+export const StyledP = styled.p`
+padding: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+`
+const StyledTodoListDiv = styled.div`
+  width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 20%));
+  grid-template-columns: repeat(auto-fill, minmax(180px, 28%));
   grid-gap: 3%;
   align-items: center;
   justify-content: center;
