@@ -1,4 +1,6 @@
+import React from "react";
 import { styled } from "styled-components";
+import { StyledP } from "./TodoList";
 type Props = {
   todos: Todo[];
   toggleTodo: (id: string) => void;
@@ -10,11 +12,11 @@ type Todo = {
   content: string;
   isDone: boolean;
 };
-const TodoList = ({ todos, toggleTodo, deleteTodo }: Props) => {
+const DoneList = ({ todos, toggleTodo, deleteTodo }: Props) => {
   return (
     <>
-      <StyledP>Todo..</StyledP>
-      <StyledTodoListDiv>
+      <StyledP>Done..</StyledP>
+      <div className="done-container">
         {todos.map((todo, idx) => {
           return (
             <StyledTodoCard key={idx}>
@@ -37,27 +39,12 @@ const TodoList = ({ todos, toggleTodo, deleteTodo }: Props) => {
             </StyledTodoCard>
           );
         })}
-      </StyledTodoListDiv>
+      </div>
     </>
   );
 };
 
-export default TodoList;
-export const StyledP = styled.p`
-  width: 100%;
-  padding: 10px;
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 10px;
-`;
-const StyledTodoListDiv = styled.div`
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 28%));
-  grid-gap: 3%;
-  align-items: center;
-  justify-content: center;
-`;
+export default DoneList;
 
 const StyledTodoCard = styled.div`
   padding: 10px;
