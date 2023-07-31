@@ -15,7 +15,7 @@ type Todo = {
 const Main = (props: Props) => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const doneTodos = todos.filter((todo) => todo.isDone);
-  const notDoneTodos = todos.filter((todo) => !todo.isDone);
+  const unDoneTodos = todos.filter((todo) => !todo.isDone);
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const addTodo = (): void => {
@@ -72,7 +72,7 @@ const Main = (props: Props) => {
           </form>
         </div>
         <TodoList
-          todos={notDoneTodos}
+          todos={unDoneTodos}
           toggleTodo={toggleTodo}
           deleteTodo={deleteTodo}
         />
