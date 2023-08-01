@@ -1,15 +1,7 @@
-import Header from "./components/Header";
-import Main from "./components/Main";
-
+import Router from "./shared/Router";
 
 const App = () => {
-  return (
-    <div>
-      <Header />
-      <Main />
-    </div>
-  );
+  return <Router />;
 };
 
 export default App;
-

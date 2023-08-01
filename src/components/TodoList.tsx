@@ -1,16 +1,21 @@
+import { useSelector } from "react-redux";
 import { styled } from "styled-components";
+import { RootState } from "../redux/config/configStore";
+import { Link } from "react-router-dom";
 type Props = {
-  todos: Todo[];
   toggleTodo: (id: string) => void;
   deleteTodo: (id: string) => void;
 };
-type Todo = {
-  id: string;
-  title: string;
-  content: string;
-  isDone: boolean;
-};
-const TodoList = ({ todos, toggleTodo, deleteTodo }: Props) => {
+// type Todo = {
+//   id: string;
+//   title: string;
+//   content: string;
+//   isDone: boolean;
+// };
+const TodoList = ({ toggleTodo, deleteTodo }: Props) => {
+  const todos = useSelector((state: RootState) => state.todos).filter(
+    (todo) => !todo.isDone
+  );
   return (
     <>
       <StyledP>Todo..</StyledP>
@@ -34,6 +39,7 @@ const TodoList = ({ todos, toggleTodo, deleteTodo }: Props) => {
               >
                 삭제
               </button>
+              <Link to={`/details/${todo.id}`}>상세보기</Link>
             </StyledTodoCard>
           );
         })}

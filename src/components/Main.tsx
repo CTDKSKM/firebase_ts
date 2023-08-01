@@ -1,31 +1,49 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import TodoList from "./TodoList";
 import { styled } from "styled-components";
-import { useState } from "react";
 import DoneList from "./DoneList";
+import { useDispatch } from "react-redux";
+import uuid from "react-uuid";
+import { addTodo, deleteTodo, toggleTodo } from "../redux/modules/todos";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/config/configStore";
 
-type Props = {};
-type Todo = {
+export type Todo = {
   id: string;
   title: string;
   content: string;
   isDone: boolean;
 };
 
-const Main = (props: Props) => {
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const doneTodos = todos.filter((todo) => todo.isDone);
-  const unDoneTodos = todos.filter((todo) => !todo.isDone);
+const Main = () => {
+  const todos = useSelector((state: RootState) => state.todos);
+  const dispatch = useDispatch();
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
-  const addTodo = (): void => {
+  const titleRef = useRef<HTMLInputElement>(null);
+  const contentRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (titleRef.current) titleRef.current.focus();
+  }, [todos]);
+
+  const checkValidation = (): boolean => {
+    if (!title || !content) {
+      if (titleRef.current && contentRef.current)
+        title ? contentRef.current.focus() : titleRef.current.focus();
+      return false;
+    } else return true;
+  };
+  const addTodoHandler = (): void => {
+    const check = checkValidation();
+    if (!check) return;
     const newTodo: Todo = {
-      id: `${todos.length + 1}`,
+      id: uuid(),
       title,
       content,
       isDone: false,
     };
-    setTodos([...todos, newTodo]);
+    dispatch(addTodo(newTodo));
     setTitle("");
     setContent("");
   };
@@ -35,15 +53,11 @@ const Main = (props: Props) => {
   const handleInputContent = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setContent(e.target.value);
   };
-  const deleteTodo = (id: string): void => {
-    const newTodos: Todo[] = todos.filter((todo) => todo.id !== id);
-    setTodos(newTodos);
+  const deleteTodoHandler = (id: string): void => {
+    dispatch(deleteTodo(id));
   };
-  const toggleTodo = (id: string): void => {
-    const newTodos: Todo[] = todos.map((todo) =>
-      todo.id === id ? { ...todo, isDone: !todo.isDone } : todo
-    );
-    setTodos(newTodos);
+  const toggleTodoHandler = (id: string): void => {
+    dispatch(toggleTodo(id));
   };
 
   return (
@@ -53,16 +67,22 @@ const Main = (props: Props) => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              addTodo();
+              addTodoHandler();
             }}
           >
             <div>
               TodoTitle:
-              <input type="text" value={title} onChange={handleInputTitle} />
+              <input
+                ref={titleRef}
+                type="text"
+                value={title}
+                onChange={handleInputTitle}
+              />
             </div>
             <div>
               TodoContent:
               <input
+                ref={contentRef}
                 type="text"
                 value={content}
                 onChange={handleInputContent}
@@ -72,9 +92,8 @@ const Main = (props: Props) => {
           </form>
         </div>
         <TodoList
-          todos={unDoneTodos}
-          toggleTodo={toggleTodo}
-          deleteTodo={deleteTodo}
+          toggleTodo={toggleTodoHandler}
+          deleteTodo={deleteTodoHandler}
         />
       </div>
       <div
@@ -86,9 +105,8 @@ const Main = (props: Props) => {
         }}
       >
         <DoneList
-          todos={doneTodos}
-          toggleTodo={toggleTodo}
-          deleteTodo={deleteTodo}
+          toggleTodo={toggleTodoHandler}
+          deleteTodo={deleteTodoHandler}
         />
       </div>
     </StyledDiv>
